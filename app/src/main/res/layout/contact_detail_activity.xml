@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="Name"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_toRightOf="@id/nameTextView"
+        android:padding="16dp"
+        android:text="abhinav"
+        android:textSize="16sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/PhoneNumberTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameTextView"
+        android:padding="16dp"
+        android:text="Phone Number"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/PhoneNumberType1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberTextView"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="Phone Number"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/PhoneNumber1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberTextView"
+        android:layout_toRightOf="@id/PhoneNumberType1"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="Phone Number"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/PhoneNumberType2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberType1"
+        android:padding="16dp"
+        android:text="Phone Number"
+        android:visibility="gone"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/PhoneNumber2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberType1"
+        android:layout_toRightOf="@id/PhoneNumberType2"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="Phone Number"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberType2"
+        android:padding="16dp"
+        android:text="Email"
+        android:visibility="gone"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/PhoneNumberType2"
+        android:layout_toRightOf="@+id/emailTextView"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:text="Email"
+        android:textColor="#000"
+        android:textSize="16sp" />
+
+</RelativeLayout>
