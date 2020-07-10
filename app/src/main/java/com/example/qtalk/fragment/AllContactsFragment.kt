@@ -4,6 +4,7 @@ import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +19,10 @@ import com.example.qtalk.R
 import com.example.qtalk.SearchContactActivty
 import com.example.qtalk.model.ContactsInfo
 import com.facebook.shimmer.ShimmerFrameLayout
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, View.OnClickListener {
     lateinit var adapter: AllContactsListAdapter
@@ -39,6 +43,7 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
         search = view.findViewById(R.id.search)
         createNewContact = view.findViewById(R.id.createNewContact)
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
+        shimmer = view.findViewById(R.id.shimmer)
         contactsInfoList = ArrayList()
         activity?.let {
             adapter = AllContactsListAdapter(it, this)
@@ -48,6 +53,8 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
         }
         swipeRefresh.setOnRefreshListener {
             contactsInfoList?.clear()
+            shimmer.visibility = View.VISIBLE
+            shimmer.startShimmerAnimation()
             CoroutineScope(Dispatchers.IO).launch {
                 getContacts()
             }
@@ -68,7 +75,7 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
         return view
     }
 
-    private fun getContacts() {
+    private suspend fun getContacts() {
         val contentResolver = activity?.contentResolver
         var contactId: String? = null
         var displayName: String? = null
@@ -80,6 +87,10 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"
         )
         if (cursor != null && cursor.count > 0) {
+            val allColumns = cursor.columnNames
+            allColumns?.forEach {
+                Log.d("allColoums", it)
+            }
 
             while (cursor.moveToNext()) {
                 val hasPhoneNumber: Int =
@@ -101,6 +112,10 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
                         arrayOf<String?>(contactId),
                         null
                     )
+                    phoneCursor?.columnNames?.forEach {
+                        Log.d("PhoneColoums",it)
+                    }
+
                     if (phoneCursor?.moveToNext()!!) {
                         val phoneNumber: String =
                             phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
@@ -114,14 +129,14 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
             }
         }
         cursor?.close()
-        CoroutineScope(Dispatchers.Main).launch {
+        withContext(Dispatchers.Main) {
             contactsInfoList?.let {
+                shimmer.stopShimmerAnimation()
+                shimmer.visibility = View.GONE
                 adapter.setListData(it)
                 adapter.notifyDataSetChanged()
             }
         }
-
-
     }
 
     override fun onclick(position: Int) {
@@ -140,9 +155,20 @@ class AllContactsFragment : Fragment(), AllContactsListAdapter.ClickListner, Vie
                 )
                 startActivity(intent)
             }
-
-
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        shimmer.startShimmerAnimation()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        shimmer.stopShimmerAnimation()
+    }
+
+
 }
+
+

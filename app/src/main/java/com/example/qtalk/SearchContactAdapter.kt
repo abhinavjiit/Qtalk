@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.qtalk.model.ContactsInfo
 import kotlinx.android.synthetic.main.search_contact_adapter.view.*
 
-class SearchContactAdapter(val clickListner: ClickListner) :
+class SearchContactAdapter(private val clickListner: ClickListner) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var contactInfo: ArrayList<ContactsInfo>? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -26,9 +26,8 @@ class SearchContactAdapter(val clickListner: ClickListner) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if (holder is ContactViewHolder) {
-            holder.UserName.text = contactInfo?.get(position)?.displayName
-
-            holder.UserName.setOnClickListener {
+            holder.userName.text = contactInfo?.get(position)?.displayName
+            holder.userName.setOnClickListener {
                 clickListner.onRecyclerClick(position)
             }
         }
@@ -40,7 +39,7 @@ class SearchContactAdapter(val clickListner: ClickListner) :
     }
 
     class ContactViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
-        val UserName: TextView = mView.UserName
+        val userName: TextView = mView.UserName
     }
 
 

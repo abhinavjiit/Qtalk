@@ -27,15 +27,8 @@ class AllContactsListActivity : AppCompatActivity() {
         setContentView(R.layout.all_contacts_list_activity)
         viewPager = findViewById(R.id.viewPager)
         tabs = findViewById(R.id.tab)
-
         tabs.addTab(tabs.newTab().setText("All Contacts"))
         tabs.addTab(tabs.newTab().setText("Starred Contacts"))
-        //    listView = findViewById(R.id.listOfContacts)
-        //   shimmer = findViewById(R.id.shimmer)
-        //  adapter = AllContactsListAdapter(this)
-        //  val llm = LinearLayoutManager(this)
-        //  listView.layoutManager = llm
-        //   listView.adapter = adapter
         requestContactPermission()
     }
 

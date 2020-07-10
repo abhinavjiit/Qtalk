@@ -13,13 +13,11 @@ class ContactPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(
 
 
     override fun getItem(position: Int): Fragment {
-
-        if (position == 0) {
-            return AllContactsFragment()
+        return if (position == 0) {
+            AllContactsFragment()
         } else {
-            return StarredContactsFragment()
+            StarredContactsFragment()
         }
-
     }
 
     override fun getCount(): Int {

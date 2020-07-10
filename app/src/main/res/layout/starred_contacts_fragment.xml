@@ -7,4 +7,15 @@
         android:id="@+id/listStarredOfContacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+
+    <TextView
+        android:id="@+id/noContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No Starred Contacts"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
 </RelativeLayout>

@@ -7,6 +7,8 @@ import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,31 +17,18 @@ import com.example.qtalk.ContactDetailActivity
 import com.example.qtalk.R
 import com.example.qtalk.model.ContactsInfo
 import com.facebook.shimmer.ShimmerFrameLayout
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 class StarredContactsFragment : Fragment(), AllContactsListAdapter.ClickListner {
     lateinit var adapter: AllContactsListAdapter
     private lateinit var listView: RecyclerView
     private var contactsInfoList: ArrayList<ContactsInfo>? = null
     private lateinit var shimmer: ShimmerFrameLayout
-    private val PROJECTION: Array<out String> = arrayOf(
-        ContactsContract.Data._ID,
-        ContactsContract.Data.MIMETYPE,
-        ContactsContract.Data.DATA1,
-        ContactsContract.Data.DATA2,
-        ContactsContract.Data.DATA3,
-        ContactsContract.Data.DATA4,
-        ContactsContract.Data.DATA5,
-        ContactsContract.Data.DATA6,
-        ContactsContract.Data.DATA7,
-        ContactsContract.Data.DATA8,
-        ContactsContract.Data.DATA9,
-        ContactsContract.Data.DATA10,
-        ContactsContract.Data.DATA11,
-        ContactsContract.Data.DATA12,
-        ContactsContract.Data.DATA13,
-        ContactsContract.Data.DATA14,
-        ContactsContract.Data.DATA15
-    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,11 +45,37 @@ class StarredContactsFragment : Fragment(), AllContactsListAdapter.ClickListner 
             listView.layoutManager = llm
             listView.adapter = adapter
         }
-        getContacts()
+        val starredData = Observable.fromCallable { getContacts() }
+
+        starredData.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<ArrayList<ContactsInfo>> {
+                override fun onComplete() {
+                }
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onNext(t: ArrayList<ContactsInfo>) {
+                    if (t.size > 0) {
+                        adapter.setListData(t)
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        val text = view.findViewById<TextView>(R.id.noContact)
+                        text.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(activity, "something went wrong", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+
         return view
     }
 
-    private fun getContacts() {
+    private fun getContacts(): ArrayList<ContactsInfo> {
         val contentResolver = activity?.contentResolver
         var contactId: String? = null
         var displayName: String? = null
@@ -99,38 +114,18 @@ class StarredContactsFragment : Fragment(), AllContactsListAdapter.ClickListner 
 
                     }
                     phoneCursor.close()
-                    /*  val emailcrusor: Cursor? = getContentResolver().query(
-                          ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                         null,
-                          ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                          arrayOf<String?>(contactId),
-                          null
-                      )
-                      if (emailcrusor?.moveToNext()!!) {
-                          val email: String =
-                          emailcrusor.getString(emailcrusor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))
-                          contactsInfo.email = email
-                          Log.d("Tag", email)
-                      }*/
-
-
-                    //  emailcrusor.close()
                     contactsInfoList?.add(contactsInfo)
                 }
             }
         }
         cursor?.close()
-        contactsInfoList?.let {
-            adapter.setListData(it)
-            adapter.notifyDataSetChanged()
-        }
-
+        return contactsInfoList!!
     }
 
     override fun onclick(position: Int) {
         val intent = Intent(activity, ContactDetailActivity::class.java)
         intent.putExtra("Contact_Id", contactsInfoList?.get(position)?.contactId)
-        intent.putExtra("DisPlayName",contactsInfoList?.get(position)?.displayName)
+        intent.putExtra("DisPlayName", contactsInfoList?.get(position)?.displayName)
         startActivity(intent)
 
     }

@@ -39,10 +39,10 @@ class SearchContactActivty : AppCompatActivity(), SearchContactAdapter.ClickList
         searchRecyclerView.layoutManager = LinearLayoutManager(this)
         searchRecyclerView.adapter = adapter
         contactInfo?.let {
-            for (i in 0 until it.size)
-                list.add(it[i])
+            it.forEach { infoItem ->
+                list.add(infoItem)
+            }
             adapter.setData(list)
-
         }
 
 
@@ -149,7 +149,6 @@ class SearchContactActivty : AppCompatActivity(), SearchContactAdapter.ClickList
                     ).show()
                 }
             }
-
         }
     }
 
@@ -161,7 +160,7 @@ class SearchContactActivty : AppCompatActivity(), SearchContactAdapter.ClickList
         ) {
             val intent1 = Intent(Intent.ACTION_CALL)
             intent1.data = Uri.parse("tel:" + list[pos].phoneNumber)
-                startActivity(intent1)
+            startActivity(intent1)
         } else {
             requestContactPermission()
         }
