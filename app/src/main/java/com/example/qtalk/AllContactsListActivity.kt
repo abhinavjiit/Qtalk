@@ -38,11 +38,17 @@ class AllContactsListActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_CONTACTS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
                         this,
                         Manifest.permission.READ_CONTACTS
+                    ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.WRITE_CONTACTS
                     )
                 ) {
                     val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -51,14 +57,21 @@ class AllContactsListActivity : AppCompatActivity() {
                     builder.setMessage("Please enable access to contacts.")
                     builder.setOnDismissListener(DialogInterface.OnDismissListener {
                         requestPermissions(
-                            arrayOf(Manifest.permission.READ_CONTACTS),
+                            arrayOf(
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.WRITE_CONTACTS
+                            ),
                             PERMISSIONS_REQUEST_READ_CONTACTS
                         )
                     })
                     builder.show()
                 } else {
                     requestPermissions(
-                        this, arrayOf(Manifest.permission.READ_CONTACTS),
+                        this,
+                        arrayOf(
+                            Manifest.permission.READ_CONTACTS,
+                            Manifest.permission.WRITE_CONTACTS
+                        ),
                         PERMISSIONS_REQUEST_READ_CONTACTS
                     )
                 }
@@ -77,7 +90,7 @@ class AllContactsListActivity : AppCompatActivity() {
     ) {
         when (requestCode) {
             PERMISSIONS_REQUEST_READ_CONTACTS -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     setAdapter()
                 } else {
                     Toast.makeText(
@@ -85,6 +98,23 @@ class AllContactsListActivity : AppCompatActivity() {
                         "You have disabled a contacts permission",
                         Toast.LENGTH_LONG
                     ).show()
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                    builder.setTitle("Read contacts access needed")
+                    builder.setPositiveButton(android.R.string.ok, null)
+                    builder.setMessage("Please enable access to contacts.")
+                    builder.setOnDismissListener(DialogInterface.OnDismissListener {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(
+                                arrayOf(
+                                    Manifest.permission.READ_CONTACTS,
+                                    Manifest.permission.WRITE_CONTACTS
+                                ),
+                                PERMISSIONS_REQUEST_READ_CONTACTS
+                            )
+                        }
+                    })
+                    builder.show()
+
                 }
             }
 
