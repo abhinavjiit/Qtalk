@@ -23,6 +23,8 @@
         </activity>
         <activity android:name=".ContactDetailActivity" />
         <activity android:name=".SearchContactActivty" />
+
+        <service android:name=".UpdateContactService" />
     </application>
 
 </manifest>
